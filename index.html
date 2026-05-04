@@ -18,7 +18,33 @@
         .small-car-icon { height: 14px; width: auto; opacity: 0.8; }
         .stat-val { color: var(--primary); font-weight: bold; font-size: 1.2em; }
 
-        .search-box { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #161616; color: white; margin-bottom: 15px; outline: none; }
+        /* --- SEARCH BOX WITH ORANGE GLOW --- */
+    .search-box { 
+    width: 100%; 
+    padding: 12px; 
+    border-radius: 8px; 
+    border: 1px solid var(--primary); /* Changed to orange border */
+    background: #161616; 
+    color: white; 
+    margin-bottom: 20px; 
+    outline: none; 
+    box-sizing: border-box;
+    /* Initial subtle glow */
+    box-shadow: 0 0 8px rgba(255, 69, 0, 0.2); 
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.search-box:focus {
+    border-color: #ff6a00;
+    /* Stronger glow when typing */
+    box-shadow: 0 0 15px rgba(255, 69, 0, 0.6), inset 0 0 5px rgba(255, 69, 0, 0.2);
+}
+
+/* Optional: Matching placeholder color */
+.search-box::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
         .add-car-form { background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); }
         
         .preset-btn { background: #222; color: #eee; border: 1px solid #444; padding: 6px 12px; border-radius: 6px; font-size: 0.8em; cursor: pointer; transition: 0.2s; }
@@ -41,12 +67,41 @@
         .edit-link { color: var(--primary); font-size: 0.7em; cursor: pointer; text-decoration: underline; opacity: 0.8; }
         .price-section { text-align: right; }
         .price-text { font-weight: 900; color: #fff; font-size: 1.2em; }
+        .qty-badge { font-size: 0.7em; color: #888; margin-top: 2px; display: block; }
         .remove-btn { color: #333; font-size: 0.7em; cursor: pointer; margin-top: 4px; transition: 0.2s; }
         .remove-btn:hover { color: #ff4444; }
 
-        /* Hunt Badges */
-        .badge-th { color: #ffd700; font-weight: 900; font-size: 0.65em; margin-left: 6px; border: 1px solid #ffd700; padding: 1px 5px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; }
-        .badge-sth { color: #ff4500; font-weight: 900; font-size: 0.65em; margin-left: 6px; border: 1px solid #ff4500; padding: 1px 5px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; }
+        .badge-th { 
+            color: #ffd700; font-weight: 900; font-size: 0.65em; margin-left: 10px; 
+            border: 1px solid #ffd700; padding: 1px 6px; border-radius: 4px; 
+            text-transform: uppercase; letter-spacing: 0.5px; display: inline-block;
+            box-shadow: 0 0 8px rgba(255, 215, 0, 0.6); text-shadow: 0 0 5px #ffd700;
+        }
+
+        .badge-sth { 
+            color: #ff4500; font-weight: 900; font-size: 0.65em; margin-left: 10px; 
+            border: 1px solid #ff4500; padding: 1px 6px; border-radius: 4px; 
+            text-transform: uppercase; letter-spacing: 0.5px; display: inline-block;
+            box-shadow: 0 0 12px rgba(255, 69, 0, 0.8), inset 0 0 4px rgba(255, 69, 0, 0.4);
+            text-shadow: 0 0 8px #ff4500; animation: pulse-glow 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 8px rgba(255, 69, 0, 0.6); }
+            50% { box-shadow: 0 0 18px rgba(255, 69, 0, 1), inset 0 0 6px rgba(255, 69, 0, 0.6); }
+            100% { box-shadow: 0 0 8px rgba(255, 69, 0, 0.6); }
+        }
+
+        .case-car-item {
+            background: #222; margin: 5px 0; padding: 12px; border-radius: 8px; 
+            cursor: pointer; text-align: left; border: 1px solid #333; 
+            display: flex; justify-content: space-between; font-size: 0.85em; transition: 0.2s;
+        }
+        .case-car-item:hover { border-color: #555; background: #2a2a2a; }
+        .case-car-name {
+            color: #ffffff; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+        }
 
         .admin-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f0f0f; display: flex; justify-content: center; overflow-y: auto; z-index: 9999; }
         .admin-content { width: 100%; max-width: 500px; padding: 40px 20px; }
@@ -77,8 +132,6 @@
         <div class="stat-item"><div class="stat-label"><img src="images/logo.png" alt="car" class="small-car-icon">Total Cars</div><span id="totalCount" class="stat-val">0</span></div>
         <div class="stat-item"><div class="stat-label">Collection Value</div><span id="totalValue" class="stat-val">$0.00</span></div>
     </div>
-
-    <input type="text" id="searchInput" class="search-box" placeholder="Search by name or series..." onkeyup="renderCars()">
 
     <div class="category-tabs">
         <div class="tab active" onclick="filterType('all', this)">All</div>
@@ -111,6 +164,9 @@
         📂 BROWSE 2026 CASES (A-Q)
     </button>
 
+    <!-- This box is now properly aligned using box-sizing -->
+    <input type="text" id="searchInput" class="search-box" placeholder="Search by name or series..." onkeyup="renderCars()">
+
     <div id="carList"></div>
 </div>
 
@@ -128,10 +184,10 @@
     </div>
 </div>
 
-<!-- Details Editor -->
 <div id="adminPanel" class="admin-panel hidden">
     <div class="admin-content">
         <div id="editMainName" class="admin-header">PROPERTY</div>
+        <div class="prop-group" style="background: #221100; border-radius: 8px; border: 1px solid #442200;"><div class="prop-label"><i class="prop-icon">#</i> Quantity Owned</div><input type="number" id="editQty" class="prop-input" style="font-weight:bold; color:var(--primary);"></div>
         <div class="prop-group"><div class="prop-label"><i class="prop-icon">☰</i> Model</div><input type="text" id="editModel" class="prop-input"></div>
         <div class="prop-group"><div class="prop-label"><i class="prop-icon">list</i> Series/Mini Col</div><input type="text" id="editSeries" class="prop-input tag-blue"></div>
         <div class="prop-group"><div class="prop-label"><i class="prop-icon">📅</i> Model Release</div><input type="text" id="editRelease" class="prop-input"></div>
@@ -163,22 +219,32 @@ let selectedCase = "";
 
 const caseData = {
     'A': [
-        { name: 'Bugatti Bolide', type: 'Mainline', colNum: '001/250', seriesNum: '1/10' },
-        { name: 'Nissan Skyline GT-R (R32)', type: 'Mainline', colNum: '002/250', seriesNum: '1/5' },
-        { name: '70 Chevy Nova', type: 'Mainline', colNum: '003/250', seriesNum: '2/10' },
-        { name: 'Toyota GR Supra', type: 'Mainline', colNum: '004/250', seriesNum: '3/10' },
-        { name: 'Ford Mustang Dark Horse', type: 'Mainline', colNum: '005/250', seriesNum: '1/5' },
-        { name: 'Gotta Go', type: 'TH', colNum: '006/250', seriesNum: 'N/A' },
-        { name: 'Tesla Model S Plaid', type: 'Mainline', colNum: '007/250', seriesNum: '4/10' },
-        { name: 'Bone Shaker', type: 'Mainline', colNum: '008/250', seriesNum: '5/10' }
-    ],
-    'C': [
-        { name: 'Koenigsegg Jesko', type: 'Mainline', colNum: '052/250', seriesNum: '2/10' },
-        { name: 'Chevy Corvette C8.R', type: 'Mainline', colNum: '053/250', seriesNum: '3/5' },
-        { name: 'Tesla Model S Plaid (Blue)', type: 'Mainline', colNum: '054/250', seriesNum: '4/10' },
-        { name: 'Honda Civic Custom', type: 'Mainline', colNum: '055/250', seriesNum: '1/5' },
-        { name: 'BMW M3 Wagon', type: 'Mainline', colNum: '056/250', seriesNum: '2/5' },
-        { name: '’17 Pagani Huayra Roadster', type: 'TH', colNum: '057/250', seriesNum: 'N/A' }
+        { name: 'Ferrari F40 Competizione', type: 'Mainline', colNum: '001/250', seriesNum: '1/10' },
+        { name: 'Porsche 911 Carrera T', type: 'Mainline', colNum: '002/250', seriesNum: '1/10' },
+        { name: 'Gordon Murray Automotive T.33', type: 'Mainline', colNum: '003/250', seriesNum: '1/5' },
+        { name: '87 Buick Regal GNX', type: 'TH', colNum: '004/250', seriesNum: 'N/A' },
+        { name: 'Maserati Shamal', type: 'Mainline', colNum: '005/250', seriesNum: '2/10' },
+        { name: '2018 Honda Civic Type R', type: 'Mainline', colNum: '006/250', seriesNum: '1/5' },
+        { name: '2020 Ford Mustang Shelby GT500', type: 'Mainline', colNum: '007/250', seriesNum: '2/5' },
+        { name: '20 Jeep Gladiator', type: 'Mainline', colNum: '008/250', seriesNum: '1/10' },
+        { name: '69 Dodge Charger Daytona', type: 'Mainline', colNum: '009/250', seriesNum: '1/5' },
+        { name: 'VW T3 Custom', type: 'Mainline', colNum: '010/250', seriesNum: '1/5' },
+        { name: 'Alfa Romeo Giulia TI Super', type: 'Mainline', colNum: '011/250', seriesNum: '1/10' },
+        { name: '92 Chevy Silverado', type: 'Mainline', colNum: '012/250', seriesNum: '1/5' },
+        { name: 'Pontiac Aztec Custom', type: 'Mainline', colNum: '013/250', seriesNum: '2/5' },
+        { name: 'Land Rover Defender 90', type: 'Mainline', colNum: '014/250', seriesNum: '1/10' },
+        { name: 'Drift-Ender', type: 'STH', colNum: '015/250', seriesNum: 'N/A' },
+        { name: 'McMurtry Spéirling', type: 'Mainline', colNum: '016/250', seriesNum: '2/5' },
+        { name: 'Barbie Dream Camper', type: 'Mainline', colNum: '017/250', seriesNum: '1/5' },
+        { name: 'Batmobile', type: 'Mainline', colNum: '018/250', seriesNum: '1/5' },
+        { name: 'Audi 90 Quattro', type: 'Mainline', colNum: '019/250', seriesNum: '2/10' },
+        { name: 'Honda Motocompo', type: 'Mainline', colNum: '020/250', seriesNum: '1/5' },
+        { name: 'Porsche 911 Carrera Clip', type: 'Mainline', colNum: '021/250', seriesNum: '3/10' },
+        { name: 'Bentley Continental GT3', type: 'Mainline', colNum: '022/250', seriesNum: '4/10' },
+        { name: 'Solar Reflex', type: 'Mainline', colNum: '023/250', seriesNum: '1/5' },
+        { name: 'Rapid Pulse', type: 'Mainline', colNum: '024/250', seriesNum: '2/5' },
+        { name: 'Tanknator', type: 'Mainline', colNum: '025/250', seriesNum: '1/5' },
+        { name: 'Cloud Cutter', type: 'Mainline', colNum: '036/250', seriesNum: '1/5' }
     ]
 };
 
@@ -200,12 +266,16 @@ function setActiveCase(letter, el) {
     selectedCase = `2026 ${letter} Case`;
     const content = document.getElementById('caseContent');
     const activeList = caseData[letter] || [];
+    
     if (activeList.length > 0) {
         content.innerHTML = `<h3 style="margin-top:0; color:var(--primary); font-size:0.9em; text-transform:uppercase;">2026 ${letter} Checklist</h3>`;
         activeList.forEach(car => {
             const carBtn = document.createElement('div');
-            carBtn.style = "background:#222; margin:5px 0; padding:12px; border-radius:8px; cursor:pointer; text-align:left; border:1px solid #333; display:flex; justify-content:space-between; font-size:0.85em;";
-            carBtn.innerHTML = `<span><b>${car.name}</b></span> <span style="color:var(--primary); font-weight:bold;">${car.type}</span>`;
+            carBtn.className = "case-car-item";
+            carBtn.innerHTML = `
+                <span class="case-car-name">${car.name}</span> 
+                <span style="color:var(--primary); font-weight:bold;">${car.type}</span>
+            `;
             carBtn.onclick = () => {
                 document.getElementById('newCarName').value = car.name;
                 document.getElementById('newCarSeries').value = selectedCase;
@@ -239,31 +309,16 @@ function addCar() {
         
         const newId = Date.now();
         myCollection.push({ 
-            id: newId, 
-            name: name, 
-            series: series, 
-            type: type,
-            price: priceInput,
-            release: "2026",
-            seriesNum: autoData.seriesNum || "",
-            colNum: autoData.colNum || "",
-            pkg: "Long Card",
-            color1: "Default",
-            color2: "None",
-            wheels: "Default",
-            condition: "Mint",
-            estValue: priceInput,
-            store: ""
+            id: newId, name: name, series: series, type: type, price: priceInput,
+            qty: 1, 
+            release: "2026", seriesNum: autoData.seriesNum || "", colNum: autoData.colNum || "",
+            pkg: "Long Card", color1: "Default", color2: "None", wheels: "Default",
+            condition: "Mint", estValue: priceInput, store: ""
         });
-        
         saveAndRefresh();
-        
-        // Reset inputs
         document.getElementById('newCarName').value = '';
         document.getElementById('newCarSeries').value = '';
         document.getElementById('newCarPrice').value = '1.25';
-
-        // AUTO-POPUP EDITOR IMMEDIATELY
         openEditor(newId);
     }
 }
@@ -273,6 +328,7 @@ function openEditor(id) {
     const car = myCollection.find(c => c.id === id);
     if (car) {
         document.getElementById('editMainName').innerText = car.name;
+        document.getElementById('editQty').value = car.qty || 1;
         document.getElementById('editModel').value = car.name;
         document.getElementById('editSeries').value = car.series;
         document.getElementById('editRelease').value = car.release || "2026";
@@ -294,6 +350,7 @@ function openEditor(id) {
 function saveDetails() {
     const car = myCollection.find(c => c.id === editingId);
     if (car) {
+        car.qty = parseInt(document.getElementById('editQty').value) || 1;
         car.name = document.getElementById('editModel').value;
         car.series = document.getElementById('editSeries').value;
         car.release = document.getElementById('editRelease').value;
@@ -327,13 +384,17 @@ function renderCars() {
     const search = document.getElementById('searchInput').value.toLowerCase();
     list.innerHTML = '';
     let totalVal = 0;
+    let totalItems = 0;
     
     myCollection.filter(c => {
         const matchesTab = currentFilter === 'all' || c.type === currentFilter;
         const matchesSearch = c.name.toLowerCase().includes(search) || c.series.toLowerCase().includes(search);
         return matchesTab && matchesSearch;
     }).forEach(car => {
-        totalVal += parseFloat(car.price || 0);
+        const itemQty = parseInt(car.qty || 1);
+        const itemPrice = parseFloat(car.price || 0);
+        totalVal += (itemPrice * itemQty);
+        totalItems += itemQty;
         
         let huntBadge = '';
         const cType = car.type.toUpperCase();
@@ -354,12 +415,13 @@ function renderCars() {
                     </div>
                 </div>
                 <div class="price-section">
-                    <div class="price-text">$${parseFloat(car.price || 0).toFixed(2)}</div>
+                    <div class="price-text">$${itemPrice.toFixed(2)}</div>
+                    <span class="qty-badge">QTY: ${itemQty}</span>
                     <div class="remove-btn" onclick="deleteCar(${car.id})">Remove</div>
                 </div>
             </div>`;
     });
-    document.getElementById('totalCount').innerText = myCollection.length;
+    document.getElementById('totalCount').innerText = totalItems;
     document.getElementById('totalValue').innerText = `$${totalVal.toFixed(2)}`;
 }
 
