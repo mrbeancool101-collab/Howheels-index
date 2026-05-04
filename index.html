@@ -5,61 +5,376 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HotWheels_Index</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #121212; color: #e0e0e0; margin: 0; padding: 20px; }
+        :root { --primary: #ff4500; --bg: #0f0f0f; --card: #1a1a1a; --border: #2a2a2a; --text-dim: #888; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #e0e0e0; margin: 0; padding: 20px; padding-bottom: 100px; }
         .container { max-width: 600px; margin: auto; }
         
-        /* Navigation Style */
-        .nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 10px; background: #1e1e1e; border-radius: 12px; border: 1px solid #333; }
-        .nav-tab { color: #ff4500; text-decoration: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; }
-        .nav-tab:hover { opacity: 0.8; }
-
         .header-container { text-align: center; margin-bottom: 20px; }
-        .logo { width: 180px; height: auto; display: block; margin: 0 auto 10px; filter: drop-shadow(0px 4px 10px rgba(255, 69, 0, 0.4)); }
-        
-        .add-car-form { background: #1e1e1e; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #333; }
-        input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: #2a2a2a; color: white; box-sizing: border-box; }
-        
-        button { width: 100%; padding: 12px; background: #ff4500; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .hidden { display: none; }
+        .logo { max-width: 200px; height: auto; }
 
-        .car-card { background: #1e1e1e; padding: 15px; margin-bottom: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid #ff4500; }
-        .car-info { display: flex; align-items: center; }
-        .car-thumb { width: 60px; height: auto; margin-right: 15px; }
-        .name { font-weight: bold; display: block; color: #fff; }
-        .series { color: #888; font-size: 0.9em; }
-        .delete-btn { color: #ff4444; cursor: pointer; background: none; border: none; font-size: 14px; }
-        .checkbox { width: 24px; height: 24px; accent-color: #ff4500; }
+        .stats-bar { display: flex; justify-content: space-around; background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); font-size: 0.9em; }
+        .stat-item { display: flex; flex-direction: column; align-items: center; }
+        .stat-label { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; color: #888; }
+        .small-car-icon { height: 14px; width: auto; opacity: 0.8; }
+        .stat-val { color: var(--primary); font-weight: bold; font-size: 1.2em; }
+
+        .search-box { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #161616; color: white; margin-bottom: 15px; outline: none; }
+        .add-car-form { background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); }
+        
+        .preset-btn { background: #222; color: #eee; border: 1px solid #444; padding: 6px 12px; border-radius: 6px; font-size: 0.8em; cursor: pointer; transition: 0.2s; }
+        .preset-btn:hover { background: #333; }
+
+        .category-tabs { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+        .tab { background: #1e1e1e; border: 1px solid #333; padding: 8px 16px; border-radius: 20px; font-size: 0.85em; cursor: pointer; white-space: nowrap; color: #888; }
+        .tab.active { background: var(--primary); border-color: var(--primary); color: white; font-weight: bold; }
+
+        .car-card { background: #161616; padding: 18px 22px; margin-bottom: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #222; transition: all 0.3s ease; }
+        .car-card:hover { border-color: var(--primary); transform: translateY(-2px); }
+        
+        .car-info { display: flex; align-items: center; gap: 15px; }
+        .car-logo-thumb { height: 28px; width: auto; opacity: 0.9; }
+        
+        .car-text-wrapper { display: flex; flex-direction: column; }
+        .series-text { color: #666; font-size: 0.75em; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; line-height: 1.2; }
+        .name-text { font-weight: 800; color: #fff; font-size: 1.2em; line-height: 1.2; }
+        
+        .edit-link { color: var(--primary); font-size: 0.7em; cursor: pointer; text-decoration: underline; opacity: 0.8; }
+        .price-section { text-align: right; }
+        .price-text { font-weight: 900; color: #fff; font-size: 1.2em; }
+        .remove-btn { color: #333; font-size: 0.7em; cursor: pointer; margin-top: 4px; transition: 0.2s; }
+        .remove-btn:hover { color: #ff4444; }
+
+        /* Hunt Badges */
+        .badge-th { color: #ffd700; font-weight: 900; font-size: 0.65em; margin-left: 6px; border: 1px solid #ffd700; padding: 1px 5px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; }
+        .badge-sth { color: #ff4500; font-weight: 900; font-size: 0.65em; margin-left: 6px; border: 1px solid #ff4500; padding: 1px 5px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; }
+
+        .admin-panel { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0f0f0f; display: flex; justify-content: center; overflow-y: auto; z-index: 9999; }
+        .admin-content { width: 100%; max-width: 500px; padding: 40px 20px; }
+        .admin-header { font-size: 2.5em; font-weight: 900; margin-bottom: 30px; color: #fff; border-left: 4px solid var(--primary); padding-left: 15px; text-transform: uppercase; }
+        
+        .prop-group { margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #1a1a1a; }
+        .prop-label { display: flex; align-items: center; gap: 12px; color: var(--text-dim); font-size: 0.9em; }
+        .prop-icon { font-style: normal; width: 20px; text-align: center; opacity: 0.6; }
+        
+        .prop-input { background: transparent; border: none; color: #fff; text-align: right; font-size: 0.95em; outline: none; width: 55%; }
+        .tag-blue { background: #2b4661; color: #8ecfff; padding: 2px 8px; border-radius: 4px; }
+        .tag-orange { background: #5c331a; color: #ffb38a; padding: 2px 8px; border-radius: 4px; }
+
+        .btn-save { background: var(--primary); color: white; border: none; padding: 16px; width: 100%; border-radius: 8px; margin-top: 30px; font-weight: bold; cursor: pointer; }
+        .btn-cancel { background: none; color: #555; border: none; width: 100%; margin-top: 15px; cursor: pointer; padding-bottom: 40px; }
+        .hidden { display: none !important; }
+
+        .admin-footer { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: rgba(15, 15, 15, 0.95); display: flex; justify-content: center; align-items: center; border-top: 1px solid #222; backdrop-filter: blur(10px); }
+        .admin-logo-btn { height: 38px; cursor: pointer; opacity: 0.6; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- Navigation Bar -->
-    <div class="nav-bar">
-        <div id="backBtn" class="nav-tab hidden" onclick="toggleTab('main')">← Back</div>
-        <div id="collectionTabBtn" class="nav-tab" onclick="toggleTab('collection')">View All Cars ➔</div>
+    <div class="header-container"><img src="images/logo.png" alt="Hot Wheels Logo" class="logo"></div>
+
+    <div class="stats-bar">
+        <div class="stat-item"><div class="stat-label"><img src="images/logo.png" alt="car" class="small-car-icon">Total Cars</div><span id="totalCount" class="stat-val">0</span></div>
+        <div class="stat-item"><div class="stat-label">Collection Value</div><span id="totalValue" class="stat-val">$0.00</span></div>
     </div>
 
-    <div class="header-container">
-        <img src="images/logo.png" alt="Hot Wheels Logo" class="logo">
-        <h1 id="viewTitle">HotWheels_Index</h1>
+    <input type="text" id="searchInput" class="search-box" placeholder="Search by name or series..." onkeyup="renderCars()">
+
+    <div class="category-tabs">
+        <div class="tab active" onclick="filterType('all', this)">All</div>
+        <div class="tab" onclick="filterType('Mainline', this)">Mainline</div>
+        <div class="tab" onclick="filterType('TH', this)">Treasure Hunt</div>
+        <div class="tab" onclick="filterType('STH', this)">Super TH</div>
     </div>
 
-    <!-- Main View: Adding and Searching -->
-    <div id="mainView">
-        <div class="add-car-form">
-            <input type="text" id="newCarName" placeholder="Car Name">
-            <input type="text" id="newCarSeries" placeholder="Series">
-            <button onclick="addCar()">Add Car</button>
-            <input type="text" id="searchInput" placeholder="Search Index..." onkeyup="filterCars()" style="margin-top: 15px; border-color: #ff4500;">
+    <div class="add-car-form">
+        <div style="font-size: 0.75em; color: #888; margin-bottom: 10px; text-transform: uppercase;">Quick Presets</div>
+        <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+            <button class="preset-btn" onclick="applyPreset('Mainline', '1.25')">Mainline</button>
+            <button class="preset-btn" style="color:#ffd700; border-color:#ffd700;" onclick="applyPreset('TH', '5.00')">TH</button>
+            <button class="preset-btn" style="color:#ff4500; border-color:#ff4500;" onclick="applyPreset('STH', '25.00')">$TH</button>
         </div>
+        <input type="text" id="newCarName" placeholder="Car Name" style="background:#0f0f0f; border:1px solid #333; padding:12px; width:100%; border-radius:8px; color:white; margin-bottom:10px; box-sizing:border-box;">
+        <input type="text" id="newCarSeries" placeholder="Series" style="background:#0f0f0f; border:1px solid #333; padding:12px; width:100%; border-radius:8px; color:white; margin-bottom:10px; box-sizing:border-box;">
+        <div style="display:flex; gap:10px;">
+            <select id="carType" style="flex:1; background:#0f0f0f; border:1px solid #333; padding:12px; border-radius:8px; color:white;">
+                <option value="Mainline">Mainline</option>
+                <option value="TH">Treasure Hunt</option>
+                <option value="STH">Super TH</option>
+            </select>
+            <input type="text" id="newCarPrice" placeholder="Price" style="flex:1; background:#0f0f0f; border:1px solid #333; padding:12px; border-radius:8px; color:white;">
+        </div>
+        <button onclick="addCar()" style="background:var(--primary); color:white; border:none; border-radius:8px; padding:12px; width:100%; font-weight:bold; cursor:pointer; margin-top:10px;">Add to Collection</button>
     </div>
 
-    <!-- List Container (Shared by both views) -->
+    <button onclick="toggleCaseBox()" style="background: #333; color: white; border: 1px solid #444; border-radius: 8px; padding: 12px; width: 100%; font-weight: bold; cursor: pointer; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 10px;">
+        📂 BROWSE 2026 CASES (A-Q)
+    </button>
+
     <div id="carList"></div>
 </div>
 
-<script src="script.js"></script>
+<div id="caseOverlay" class="admin-panel hidden" style="background: rgba(0,0,0,0.9); backdrop-filter: blur(5px);">
+    <div class="admin-content" style="max-width: 450px; background: #161616; border-radius: 20px; padding: 25px; border: 1px solid #333; margin-top: 50px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div style="font-size: 1.2em; font-weight: 900; color: var(--primary);">CASE NAVIGATOR</div>
+            <span onclick="toggleCaseBox()" style="cursor: pointer; color: #555; font-size: 1.5em;">✕</span>
+        </div>
+        <div id="caseTabsContainer" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 15px; margin-bottom: 15px; border-bottom: 1px solid #222;"></div>
+        <div id="caseContent" style="min-height: 200px; text-align: center; color: #666;">
+            <p>Select a case to view the 2026 checklist.</p>
+        </div>
+        <button class="btn-cancel" onclick="toggleCaseBox()" style="margin-top: 20px;">CLOSE</button>
+    </div>
+</div>
 
+<!-- Details Editor -->
+<div id="adminPanel" class="admin-panel hidden">
+    <div class="admin-content">
+        <div id="editMainName" class="admin-header">PROPERTY</div>
+        <div class="prop-group"><div class="prop-label"><i class="prop-icon">☰</i> Model</div><input type="text" id="editModel" class="prop-input"></div>
+        <div class="prop-group"><div class="prop-label"><i class="prop-icon">list</i> Series/Mini Col</div><input type="text" id="editSeries" class="prop-input tag-blue"></div>
+        <div class="prop-group"><div class="prop-label"><i class="prop-icon">📅</i> Model Release</div><input type="text" id="editRelease" class="prop-input"></div>
+        <div class="prop-group"><div class="prop-label"><i class="prop-icon">☰</i> Series #</div><input type="text" id="editSeriesNum" class="prop-input"></div>
+        <div class="prop-group"><div class="prop-label"><i class="prop-icon">☰</i> Collection #</div><input type="text" id="editColNum" class="prop-input"></div>
+        <div class="prop-group"><div class="prop-label"><i class="prop-icon">list</i> Type</div><input type="text" id="editType" class="prop-input tag-orange"></div>
+        <div class="prop-group"><div class="prop-label"><i class="prop-icon">🔘</i> Packaging</div><input type="text" id="editPkg" class="prop-input"></div>
+        <div class="prop-group"><div class="prop-label"><i class="prop-icon">🎨</i> Base Color</div><input type="text" id="editColor1" class="prop-input"></div>
+        <div class="prop-group"><div class="prop-label"><i class="prop-icon">🎨</i> Second Color</div><input type="text" id="editColor2" class="prop-input"></div>
+        <div class="prop-group"><div class="prop-label"><i class="prop-icon">🔘</i> Wheel Type</div><input type="text" id="editWheels" class="prop-input"></div>
+        <div class="prop-group"><div class="prop-label"><i class="prop-icon">🔘</i> Condition</div><input type="text" id="editCondition" class="prop-input"></div>
+        <div class="prop-group"><div class="prop-label"><i class="prop-icon">$</i> Price Paid</div><input type="text" id="editPrice" class="prop-input"></div>
+        <div class="prop-group"><div class="prop-label"><i class="prop-icon">$</i> Estimated Value</div><input type="text" id="editVal" class="prop-input"></div>
+        <div class="prop-group"><div class="prop-label"><i class="prop-icon">📍</i> Acquired At</div><input type="text" id="editStore" class="prop-input"></div>
+        <button class="btn-save" onclick="saveDetails()">SAVE CHANGES</button>
+        <button class="btn-cancel" onclick="closeAdmin()">CANCEL</button>
+    </div>
+</div>
+
+<div class="admin-footer">
+    <img src="images/adminlogo.png" alt="Admin" class="admin-logo-btn" onclick="renderCars()">
+</div>
+
+<script>
+let myCollection = JSON.parse(localStorage.getItem('hw_collection')) || [];
+let currentFilter = 'all';
+let editingId = null;
+let selectedCase = "";
+
+const caseData = {
+    'A': [
+        { name: 'Bugatti Bolide', type: 'Mainline', colNum: '001/250', seriesNum: '1/10' },
+        { name: 'Nissan Skyline GT-R (R32)', type: 'Mainline', colNum: '002/250', seriesNum: '1/5' },
+        { name: '70 Chevy Nova', type: 'Mainline', colNum: '003/250', seriesNum: '2/10' },
+        { name: 'Toyota GR Supra', type: 'Mainline', colNum: '004/250', seriesNum: '3/10' },
+        { name: 'Ford Mustang Dark Horse', type: 'Mainline', colNum: '005/250', seriesNum: '1/5' },
+        { name: 'Gotta Go', type: 'TH', colNum: '006/250', seriesNum: 'N/A' },
+        { name: 'Tesla Model S Plaid', type: 'Mainline', colNum: '007/250', seriesNum: '4/10' },
+        { name: 'Bone Shaker', type: 'Mainline', colNum: '008/250', seriesNum: '5/10' }
+    ],
+    'C': [
+        { name: 'Koenigsegg Jesko', type: 'Mainline', colNum: '052/250', seriesNum: '2/10' },
+        { name: 'Chevy Corvette C8.R', type: 'Mainline', colNum: '053/250', seriesNum: '3/5' },
+        { name: 'Tesla Model S Plaid (Blue)', type: 'Mainline', colNum: '054/250', seriesNum: '4/10' },
+        { name: 'Honda Civic Custom', type: 'Mainline', colNum: '055/250', seriesNum: '1/5' },
+        { name: 'BMW M3 Wagon', type: 'Mainline', colNum: '056/250', seriesNum: '2/5' },
+        { name: '’17 Pagani Huayra Roadster', type: 'TH', colNum: '057/250', seriesNum: 'N/A' }
+    ]
+};
+
+const cases = ['A','B','C','D','E','F','G','H','J','K','L','M','N','P','Q'];
+const tabsWrap = document.getElementById('caseTabsContainer');
+cases.forEach(l => {
+    const t = document.createElement('div');
+    t.className = 'tab';
+    t.innerText = `Case ${l}`;
+    t.onclick = () => setActiveCase(l, t);
+    tabsWrap.appendChild(t);
+});
+
+function toggleCaseBox() { document.getElementById('caseOverlay').classList.toggle('hidden'); }
+
+function setActiveCase(letter, el) {
+    document.querySelectorAll('#caseTabsContainer .tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    selectedCase = `2026 ${letter} Case`;
+    const content = document.getElementById('caseContent');
+    const activeList = caseData[letter] || [];
+    if (activeList.length > 0) {
+        content.innerHTML = `<h3 style="margin-top:0; color:var(--primary); font-size:0.9em; text-transform:uppercase;">2026 ${letter} Checklist</h3>`;
+        activeList.forEach(car => {
+            const carBtn = document.createElement('div');
+            carBtn.style = "background:#222; margin:5px 0; padding:12px; border-radius:8px; cursor:pointer; text-align:left; border:1px solid #333; display:flex; justify-content:space-between; font-size:0.85em;";
+            carBtn.innerHTML = `<span><b>${car.name}</b></span> <span style="color:var(--primary); font-weight:bold;">${car.type}</span>`;
+            carBtn.onclick = () => {
+                document.getElementById('newCarName').value = car.name;
+                document.getElementById('newCarSeries').value = selectedCase;
+                document.getElementById('carType').value = car.type;
+                document.getElementById('newCarPrice').value = car.type === 'TH' ? "5.00" : car.type === 'STH' ? "25.00" : "1.25";
+                toggleCaseBox();
+            };
+            content.appendChild(carBtn);
+        });
+    } else {
+        content.innerHTML = `<h3>2026 ${letter} Case</h3><p style="font-size:0.8em;">Checklist for this case is coming soon!</p>`;
+    }
+}
+
+function applyPreset(type, price) {
+    document.getElementById('carType').value = type;
+    document.getElementById('newCarPrice').value = price;
+}
+
+function addCar() {
+    const name = document.getElementById('newCarName').value;
+    const series = document.getElementById('newCarSeries').value || "Unknown";
+    const priceInput = document.getElementById('newCarPrice').value || "1.25";
+    const type = document.getElementById('carType').value;
+    if (name) {
+        let autoData = {};
+        Object.values(caseData).forEach(list => {
+            const found = list.find(c => c.name === name);
+            if (found) autoData = found;
+        });
+        
+        const newId = Date.now();
+        myCollection.push({ 
+            id: newId, 
+            name: name, 
+            series: series, 
+            type: type,
+            price: priceInput,
+            release: "2026",
+            seriesNum: autoData.seriesNum || "",
+            colNum: autoData.colNum || "",
+            pkg: "Long Card",
+            color1: "Default",
+            color2: "None",
+            wheels: "Default",
+            condition: "Mint",
+            estValue: priceInput,
+            store: ""
+        });
+        
+        saveAndRefresh();
+        
+        // Reset inputs
+        document.getElementById('newCarName').value = '';
+        document.getElementById('newCarSeries').value = '';
+        document.getElementById('newCarPrice').value = '1.25';
+
+        // AUTO-POPUP EDITOR IMMEDIATELY
+        openEditor(newId);
+    }
+}
+
+function openEditor(id) {
+    editingId = id;
+    const car = myCollection.find(c => c.id === id);
+    if (car) {
+        document.getElementById('editMainName').innerText = car.name;
+        document.getElementById('editModel').value = car.name;
+        document.getElementById('editSeries').value = car.series;
+        document.getElementById('editRelease').value = car.release || "2026";
+        document.getElementById('editSeriesNum').value = car.seriesNum || "";
+        document.getElementById('editColNum').value = car.colNum || "";
+        document.getElementById('editType').value = car.type || "Mainline";
+        document.getElementById('editPkg').value = car.pkg || "Long Card";
+        document.getElementById('editColor1').value = car.color1 || "";
+        document.getElementById('editColor2').value = car.color2 || "";
+        document.getElementById('editWheels').value = car.wheels || "";
+        document.getElementById('editCondition').value = car.condition || "Mint";
+        document.getElementById('editPrice').value = car.price || "1.25";
+        document.getElementById('editVal').value = car.estValue || "1.25";
+        document.getElementById('editStore').value = car.store || "";
+        document.getElementById('adminPanel').classList.remove('hidden');
+    }
+}
+
+function saveDetails() {
+    const car = myCollection.find(c => c.id === editingId);
+    if (car) {
+        car.name = document.getElementById('editModel').value;
+        car.series = document.getElementById('editSeries').value;
+        car.release = document.getElementById('editRelease').value;
+        car.seriesNum = document.getElementById('editSeriesNum').value;
+        car.colNum = document.getElementById('editColNum').value;
+        car.type = document.getElementById('editType').value;
+        car.pkg = document.getElementById('editPkg').value;
+        car.color1 = document.getElementById('editColor1').value;
+        car.color2 = document.getElementById('editColor2').value;
+        car.wheels = document.getElementById('editWheels').value;
+        car.condition = document.getElementById('editCondition').value;
+        car.price = document.getElementById('editPrice').value;
+        car.estValue = document.getElementById('editVal').value;
+        car.store = document.getElementById('editStore').value;
+        closeAdmin();
+        saveAndRefresh();
+    }
+}
+
+function closeAdmin() { document.getElementById('adminPanel').classList.add('hidden'); }
+
+function filterType(type, el) {
+    currentFilter = type;
+    document.querySelectorAll('.category-tabs .tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    renderCars();
+}
+
+function renderCars() {
+    const list = document.getElementById('carList');
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    list.innerHTML = '';
+    let totalVal = 0;
+    
+    myCollection.filter(c => {
+        const matchesTab = currentFilter === 'all' || c.type === currentFilter;
+        const matchesSearch = c.name.toLowerCase().includes(search) || c.series.toLowerCase().includes(search);
+        return matchesTab && matchesSearch;
+    }).forEach(car => {
+        totalVal += parseFloat(car.price || 0);
+        
+        let huntBadge = '';
+        const cType = car.type.toUpperCase();
+        if (cType === 'TH') huntBadge = '<span class="badge-th">TH</span>';
+        else if (cType === 'STH') huntBadge = '<span class="badge-sth">$TH</span>';
+
+        list.innerHTML += `
+            <div class="car-card">
+                <div class="car-info">
+                    <img src="images/logo.png" alt="logo" class="car-logo-thumb">
+                    <div class="car-text-wrapper">
+                        <span class="series-text">${car.series}</span>
+                        <span class="name-text">${car.name}</span>
+                        <div style="display: flex; align-items: center; margin-top: 5px;">
+                             <span class="edit-link" onclick="openEditor(${car.id})">Details</span>
+                             ${huntBadge}
+                        </div>
+                    </div>
+                </div>
+                <div class="price-section">
+                    <div class="price-text">$${parseFloat(car.price || 0).toFixed(2)}</div>
+                    <div class="remove-btn" onclick="deleteCar(${car.id})">Remove</div>
+                </div>
+            </div>`;
+    });
+    document.getElementById('totalCount').innerText = myCollection.length;
+    document.getElementById('totalValue').innerText = `$${totalVal.toFixed(2)}`;
+}
+
+function saveAndRefresh() {
+    localStorage.setItem('hw_collection', JSON.stringify(myCollection));
+    renderCars();
+}
+
+function deleteCar(id) {
+    if(confirm("Delete car?")) {
+        myCollection = myCollection.filter(c => c.id !== id);
+        saveAndRefresh();
+    }
+}
+renderCars();
+</script>
 </body>
 </html>
