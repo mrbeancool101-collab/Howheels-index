@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HotWheels_Index</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #121212; color: #e0e0e0; margin: 0; padding: 20px; }
+        .container { max-width: 600px; margin: auto; }
+        
+        /* Navigation Style */
+        .nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 10px; background: #1e1e1e; border-radius: 12px; border: 1px solid #333; }
+        .nav-tab { color: #ff4500; text-decoration: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; }
+        .nav-tab:hover { opacity: 0.8; }
+
+        .header-container { text-align: center; margin-bottom: 20px; }
+        .logo { width: 180px; height: auto; display: block; margin: 0 auto 10px; filter: drop-shadow(0px 4px 10px rgba(255, 69, 0, 0.4)); }
+        
+        .add-car-form { background: #1e1e1e; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #333; }
+        input { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 8px; border: 1px solid #444; background: #2a2a2a; color: white; box-sizing: border-box; }
+        
+        button { width: 100%; padding: 12px; background: #ff4500; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .hidden { display: none; }
+
+        .car-card { background: #1e1e1e; padding: 15px; margin-bottom: 12px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid #ff4500; }
+        .car-info { display: flex; align-items: center; }
+        .car-thumb { width: 60px; height: auto; margin-right: 15px; }
+        .name { font-weight: bold; display: block; color: #fff; }
+        .series { color: #888; font-size: 0.9em; }
+        .delete-btn { color: #ff4444; cursor: pointer; background: none; border: none; font-size: 14px; }
+        .checkbox { width: 24px; height: 24px; accent-color: #ff4500; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Navigation Bar -->
+    <div class="nav-bar">
+        <div id="backBtn" class="nav-tab hidden" onclick="toggleTab('main')">← Back</div>
+        <div id="collectionTabBtn" class="nav-tab" onclick="toggleTab('collection')">View All Cars ➔</div>
+    </div>
+
+    <div class="header-container">
+        <img src="images/logo.png" alt="Hot Wheels Logo" class="logo">
+        <h1 id="viewTitle">HotWheels_Index</h1>
+    </div>
+
+    <!-- Main View: Adding and Searching -->
+    <div id="mainView">
+        <div class="add-car-form">
+            <input type="text" id="newCarName" placeholder="Car Name">
+            <input type="text" id="newCarSeries" placeholder="Series">
+            <button onclick="addCar()">Add Car</button>
+            <input type="text" id="searchInput" placeholder="Search Index..." onkeyup="filterCars()" style="margin-top: 15px; border-color: #ff4500;">
+        </div>
+    </div>
+
+    <!-- List Container (Shared by both views) -->
+    <div id="carList"></div>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
